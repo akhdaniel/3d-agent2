@@ -12,7 +12,8 @@
         class="avatar-video"
       />
       <div v-else class="avatar-placeholder">
-        <video
+        <img src="/static/idle.png" class="avatar-video" />
+        <!-- <video
           :src="idleVideoSrc"
           controls="0"
           autoplay="1"
@@ -20,7 +21,7 @@
           muted
           playsinline
           class="avatar-video"
-        />
+        /> -->
         
       </div>
     </div>
