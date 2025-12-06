@@ -65,6 +65,17 @@ const error = ref("");
 const videoUrl = ref("");
 const textQuestion = ref("");
 const idleVideoSrc = new URL("../../static/idle.mp4", import.meta.url).href;
+// const fallbackBase =
+//   typeof window !== "undefined" &&
+//   (window.location.hostname === "localhost" ||
+//     window.location.hostname === "127.0.0.1")
+//     ? "http://localhost:28000"
+//     : typeof window !== "undefined"
+//     ? window.location.origin
+//     : "http://localhost:28000";
+const API_BASE_URL = (
+  import.meta.env.VITE_API_BASE_URL
+).replace(/\/$/, "");
 
 let chunks = [];
 let mediaRecorder = null;
@@ -114,7 +125,7 @@ async function stopRecording() {
       form.append("audio", blob, "audio.webm");
 
       try {
-        const res = await fetch("http://localhost:28000/talk", {
+        const res = await fetch(`${API_BASE_URL}/talk`, {
           method: "POST",
           body: form,
         });
@@ -148,7 +159,7 @@ async function sendTypedQuestion() {
   form.append("text", textQuestion.value.trim());
 
   try {
-    const res = await fetch("http://localhost:28000/talk", {
+    const res = await fetch(`${API_BASE_URL}/talk`, {
       method: "POST",
       body: form,
     });
