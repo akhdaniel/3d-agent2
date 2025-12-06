@@ -1,10 +1,10 @@
 <template>
-  <div class="container py-4 avatar-chat">
+  <div class="container avatar-chat">
     <div class="row justify-content-center">
-      <div class="col-12 col-lg-10">
+      <div class="col-sm-12 col-lg-10">
         <div class="card border-0 shadow-sm">
           <div class="card-body">
-            <div class="mb-4 avatar-wrapper rounded-4 overflow-hidden">
+            <div class="mb-2 avatar-wrapper rounded-4 overflow-hidden">
               <video
                 v-if="videoUrl"
                 :src="videoUrl"
@@ -19,8 +19,8 @@
               </div>
             </div>
 
-            <div class="row g-3 align-items-stretch">
-              <div class="col-12 col-md">
+            <div class="row g-2 align-items-stretch">
+              <div class="col-sm-12 col-md-auto">
                 <input
                   v-model="textQuestion"
                   class="form-control form-control-lg"
@@ -30,7 +30,7 @@
                   @keyup.enter="sendTypedQuestion"
                 />
               </div>
-              <div class="col-12 col-md-auto">
+              <div class="col-sm-12 col-md-auto">
                 <button
                   class="btn btn-success btn-lg w-100"
                   @click="sendTypedQuestion"
@@ -39,7 +39,7 @@
                   💬 Send Text
                 </button>
               </div>
-              <div class="col-12 col-md-auto" v-if="!isRecording">
+              <div class="col-sm-12 col-md-auto" v-if="!isRecording">
                 <button
                   class="btn btn-primary btn-lg w-100"
                   @click="startRecording"
@@ -48,7 +48,7 @@
                   🎤 Start Talking
                 </button>
               </div>
-              <div class="col-12 col-md-auto" v-else>
+              <div class="col-sm-12 col-md-auto" v-else>
                 <button class="btn btn-danger btn-lg w-100" @click="stopRecording">
                   ⏹ Stop
                 </button>
@@ -214,13 +214,5 @@ function handleVideoEnded() {
   display: block;
 }
 
-@media (max-width: 575.98px) {
-  .avatar-chat .card-body {
-    padding: 1.25rem;
-  }
 
-  .btn-lg {
-    font-size: 1rem;
-  }
-}
 </style>
