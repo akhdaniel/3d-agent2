@@ -1,58 +1,66 @@
 <template>
-  <div class="chat-container">
+  <div class="container py-4 avatar-chat">
+    <div class="row justify-content-center">
+      <div class="col-12 col-lg-10">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body">
+            <div class="mb-4 avatar-wrapper rounded-4 overflow-hidden">
+              <video
+                v-if="videoUrl"
+                :src="videoUrl"
+                controls="0"
+                autoplay="1"
+                playsinline
+                @ended="handleVideoEnded"
+                class="w-100 avatar-video"
+              />
+              <div v-else class="avatar-placeholder w-100 d-flex justify-content-center">
+                <img src="/static/idle.png" class="idle-image" alt="Idle avatar" />
+              </div>
+            </div>
 
-    <div class="avatar-wrapper">
-      <video
-        v-if="videoUrl"
-        :src="videoUrl"
-        controls="0"
-        autoplay="1"
-        playsinline
-        @ended="handleVideoEnded"
-        class="avatar-video"
-      />
-      <div v-else class="avatar-placeholder">
-        <img src="/static/idle.png" class="avatar-video" />
-        <!-- <video
-          :src="idleVideoSrc"
-          controls="0"
-          autoplay="1"
-          loop
-          muted
-          playsinline
-          class="avatar-video"
-        /> -->
-        
+            <div class="row g-3 align-items-stretch">
+              <div class="col-12 col-md">
+                <input
+                  v-model="textQuestion"
+                  class="form-control form-control-lg"
+                  type="text"
+                  placeholder="Type a question..."
+                  :disabled="loading"
+                  @keyup.enter="sendTypedQuestion"
+                />
+              </div>
+              <div class="col-12 col-md-auto">
+                <button
+                  class="btn btn-success btn-lg w-100"
+                  @click="sendTypedQuestion"
+                  :disabled="loading || !textQuestion.trim().length"
+                >
+                  💬 Send Text
+                </button>
+              </div>
+              <div class="col-12 col-md-auto" v-if="!isRecording">
+                <button
+                  class="btn btn-primary btn-lg w-100"
+                  @click="startRecording"
+                  :disabled="loading"
+                >
+                  🎤 Start Talking
+                </button>
+              </div>
+              <div class="col-12 col-md-auto" v-else>
+                <button class="btn btn-danger btn-lg w-100" @click="stopRecording">
+                  ⏹ Stop
+                </button>
+              </div>
+            </div>
+
+            <p v-if="loading" class="text-muted mt-3 mb-0">⏳ Processing...</p>
+            <p v-if="error" class="text-danger mt-2 mb-0">{{ error }}</p>
+          </div>
+        </div>
       </div>
     </div>
-
-    <div class="controls">
-      <input
-        v-model="textQuestion"
-        class="text-question-input"
-        type="text"
-        placeholder="Type a question..."
-        :disabled="loading"
-        @keyup.enter="sendTypedQuestion"
-      />
-      <button
-        class="btn send-text"
-        @click="sendTypedQuestion"
-        :disabled="loading || !textQuestion.trim().length"
-      >
-        💬 Send Text
-      </button>
-      <button v-if="!isRecording" @click="startRecording" class="btn start" :disabled="loading">
-        🎤 Start Talking
-      </button>
-      <button v-if="isRecording" @click="stopRecording" class="btn stop">
-        ⏹ Stop
-      </button>
-
-      <p v-if="loading" class="loading">⏳ Processing...</p>
-      <p v-if="error" class="error">{{ error }}</p>
-    </div>
-
   </div>
 </template>
 
@@ -64,7 +72,6 @@ const loading = ref(false);
 const error = ref("");
 const videoUrl = ref("");
 const textQuestion = ref("");
-const idleVideoSrc = new URL("../../static/idle.mp4", import.meta.url).href;
 
 const API_BASE_URL = "https://agent.nexoira.chat/api"
 
@@ -188,101 +195,32 @@ function handleVideoEnded() {
 </script>
 
 <style scoped>
-.chat-container {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  width: 100%;
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 1rem;
-  box-sizing: border-box;
+.avatar-chat .card-body {
+  padding: 1.5rem;
 }
 
 .avatar-wrapper {
-  width: 100%;
+  background: #0f172a;
 }
 
-.avatar-video,
-.avatar-placeholder img {
+.avatar-video {
+  max-height: 520px;
+  object-fit: cover;
+}
+
+.idle-image {
   width: 100%;
   height: auto;
-  border-radius: 12px;
-  object-fit: cover;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  display: block;
 }
 
-.controls {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  gap: 0.75rem;
-}
-
-.text-question-input {
-  flex: 1;
-  min-width: 200px;
-  padding: 0.6rem 0.75rem;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 1rem;
-}
-
-.btn {
-  padding: 0.6rem 0.9rem;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 0.95rem;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-
-.btn:disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-
-.start {
-  background-color: #2d8bff;
-  color: #fff;
-}
-
-.stop {
-  background-color: #ff4949;
-  color: #fff;
-}
-
-.send-text {
-  background-color: #4caf50;
-  color: #fff;
-}
-
-.btn:not(:disabled):active {
-  transform: scale(0.98);
-  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.15);
-}
-
-.loading {
-  color: #555;
-}
-
-.error {
-  color: #ff4949;
-}
-
-@media (max-width: 640px) {
-  .chat-container {
-    padding: 0.75rem;
+@media (max-width: 575.98px) {
+  .avatar-chat .card-body {
+    padding: 1.25rem;
   }
 
-  .controls {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .text-question-input,
-  .btn {
-    width: 100%;
+  .btn-lg {
+    font-size: 1rem;
   }
 }
 </style>
