@@ -1,0 +1,13 @@
+# ---- Core Framework ----
+fastapi==0.111.0
+uvicorn[standard]==0.29.0
+
+# ---- OpenAI SDK (new) ----
+openai>=1.40.0
+
+# ---- Env & HTTP ----
+python-dotenv==1.0.1
+requests==2.32.3
+
+# ---- Optional performance ----
+aiofiles==23.2.1
