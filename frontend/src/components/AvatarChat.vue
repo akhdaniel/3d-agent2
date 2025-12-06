@@ -119,16 +119,19 @@ async function stopRecording() {
       form.append("audio", blob, "audio.webm");
 
       try {
-        const res = await fetch(`${API_BASE_URL}/talk`, {
+        const data = await fetchJsonOrThrow(`${API_BASE_URL}/talk`, {
           method: "POST",
           body: form,
         });
-
-        const data = await res.json();
+        if (!data?.video_url) {
+          throw new Error("Server response missing video URL.");
+        }
         videoUrl.value = data.video_url;
       } catch (err) {
         console.error(err);
-        error.value = "Server error generating response.";
+        const details =
+          err instanceof Error ? err.message : JSON.stringify(err, null, 2);
+        error.value = `Server error generating response: ${details}`;
       }
 
       loading.value = false;
@@ -153,27 +156,17 @@ async function sendTypedQuestion() {
   form.append("text", textQuestion.value.trim());
 
   try {
-    const res = await fetch(`${API_BASE_URL}/talk`, {
+    const data = await fetchJsonOrThrow(`${API_BASE_URL}/talk`, {
       method: "POST",
       body: form,
     });
 
-    const data = await res.json();
-    if (!res.ok) {
-      const serverMessage =
-        data?.detail?.message ||
-        data?.detail ||
-        data?.message ||
-        JSON.stringify(data);
-      throw new Error(serverMessage || "Server returned an error.");
-    }
-
-    if (data.video_url) {
-      videoUrl.value = data.video_url;
-      textQuestion.value = "";
-    } else {
+    if (!data?.video_url) {
       throw new Error("Invalid response from server.");
     }
+
+    videoUrl.value = data.video_url;
+    textQuestion.value = "";
   } catch (err) {
     console.error(err);
     const details =
@@ -186,6 +179,32 @@ async function sendTypedQuestion() {
 
 function handleVideoEnded() {
   videoUrl.value = "";
+}
+
+async function fetchJsonOrThrow(url, options) {
+  const res = await fetch(url, options);
+  const rawText = await res.text();
+  let data = null;
+
+  if (rawText) {
+    try {
+      data = JSON.parse(rawText);
+    } catch (parseError) {
+      throw new Error(`Failed to parse server response: ${rawText}`);
+    }
+  }
+
+  if (!res.ok) {
+    const message =
+      data?.detail?.message ||
+      data?.detail ||
+      data?.message ||
+      rawText ||
+      `HTTP ${res.status}`;
+    throw new Error(message);
+  }
+
+  return data;
 }
 </script>
 
