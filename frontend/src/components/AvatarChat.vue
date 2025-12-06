@@ -195,9 +195,7 @@ function handleVideoEnded() {
 </script>
 
 <style scoped>
-.avatar-chat .card-body {
-  padding: 1.5rem;
-}
+
 
 .avatar-wrapper {
   background: #0f172a;
