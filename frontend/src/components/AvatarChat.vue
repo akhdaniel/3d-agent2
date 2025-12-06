@@ -65,11 +65,6 @@ const error = ref("");
 const videoUrl = ref("");
 const textQuestion = ref("");
 const idleVideoSrc = new URL("../../static/idle.mp4", import.meta.url).href;
-const API_BASE_URL =
-  window.location.hostname === "localhost" ||
-  window.location.hostname === "127.0.0.1"
-    ? "http://localhost:28000"
-    : "";
 
 let chunks = [];
 let mediaRecorder = null;
@@ -119,19 +114,16 @@ async function stopRecording() {
       form.append("audio", blob, "audio.webm");
 
       try {
-        const data = await fetchJsonOrThrow(`${API_BASE_URL}/talk`, {
+        const res = await fetch("http://localhost:28000/talk", {
           method: "POST",
           body: form,
         });
-        if (!data?.video_url) {
-          throw new Error("Server response missing video URL.");
-        }
+
+        const data = await res.json();
         videoUrl.value = data.video_url;
       } catch (err) {
         console.error(err);
-        const details =
-          err instanceof Error ? err.message : JSON.stringify(err, null, 2);
-        error.value = `Server error generating response: ${details}`;
+        error.value = "Server error generating response.";
       }
 
       loading.value = false;
@@ -156,17 +148,27 @@ async function sendTypedQuestion() {
   form.append("text", textQuestion.value.trim());
 
   try {
-    const data = await fetchJsonOrThrow(`${API_BASE_URL}/talk`, {
+    const res = await fetch("http://localhost:28000/talk", {
       method: "POST",
       body: form,
     });
 
-    if (!data?.video_url) {
-      throw new Error("Invalid response from server.");
+    const data = await res.json();
+    if (!res.ok) {
+      const serverMessage =
+        data?.detail?.message ||
+        data?.detail ||
+        data?.message ||
+        JSON.stringify(data);
+      throw new Error(serverMessage || "Server returned an error.");
     }
 
-    videoUrl.value = data.video_url;
-    textQuestion.value = "";
+    if (data.video_url) {
+      videoUrl.value = data.video_url;
+      textQuestion.value = "";
+    } else {
+      throw new Error("Invalid response from server.");
+    }
   } catch (err) {
     console.error(err);
     const details =
@@ -181,31 +183,6 @@ function handleVideoEnded() {
   videoUrl.value = "";
 }
 
-async function fetchJsonOrThrow(url, options) {
-  const res = await fetch(url, options);
-  const rawText = await res.text();
-  let data = null;
-
-  if (rawText) {
-    try {
-      data = JSON.parse(rawText);
-    } catch (parseError) {
-      throw new Error(`Failed to parse server response: ${rawText}`);
-    }
-  }
-
-  if (!res.ok) {
-    const message =
-      data?.detail?.message ||
-      data?.detail ||
-      data?.message ||
-      rawText ||
-      `HTTP ${res.status}`;
-    throw new Error(message);
-  }
-
-  return data;
-}
 </script>
 
 <style scoped>
