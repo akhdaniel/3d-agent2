@@ -154,6 +154,15 @@ async function sendTypedQuestion() {
     });
 
     const data = await res.json();
+    if (!res.ok) {
+      const serverMessage =
+        data?.detail?.message ||
+        data?.detail ||
+        data?.message ||
+        JSON.stringify(data);
+      throw new Error(serverMessage || "Server returned an error.");
+    }
+
     if (data.video_url) {
       videoUrl.value = data.video_url;
       textQuestion.value = "";
@@ -162,7 +171,9 @@ async function sendTypedQuestion() {
     }
   } catch (err) {
     console.error(err);
-    error.value = "Server error generating response from text.";
+    const details =
+      err instanceof Error ? err.message : JSON.stringify(err, null, 2);
+    error.value = `Server error generating response from text: ${details}`;
   } finally {
     loading.value = false;
   }
