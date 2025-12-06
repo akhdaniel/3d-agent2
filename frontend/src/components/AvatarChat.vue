@@ -20,7 +20,7 @@
             </div>
 
             <div class="row g-2 align-items-stretch">
-              <div class="col-sm-12 col-md-3">
+              <div class="col-sm-12 col-lg-3">
                 <input
                   v-model="textQuestion"
                   class="form-control form-control-lg"
@@ -30,7 +30,7 @@
                   @keyup.enter="sendTypedQuestion"
                 />
               </div>
-              <div class="col-sm-12 col-md-3">
+              <div class="col-sm-12 col-lg-3">
                 <button
                   class="btn btn-success btn-lg w-100"
                   @click="sendTypedQuestion"
@@ -39,7 +39,7 @@
                   💬 Send Text
                 </button>
               </div>
-              <div class="col-sm-12 col-md-3" v-if="!isRecording">
+              <div class="col-sm-12 col-lg-3" v-if="!isRecording">
                 <button
                   class="btn btn-primary btn-lg w-100"
                   @click="startRecording"
@@ -48,7 +48,7 @@
                   🎤 Start Talking
                 </button>
               </div>
-              <div class="col-sm-12 col-md-3" v-else>
+              <div class="col-sm-12 col-lg-3" v-else>
                 <button class="btn btn-danger btn-lg w-100" @click="stopRecording">
                   ⏹ Stop
                 </button>
