@@ -77,7 +77,7 @@ const idleVideoSrc = new URL("../../static/idle.mp4", import.meta.url).href;
 //   import.meta.env.VITE_API_BASE_URL
 // ).replace(/\/$/, "");
 
-const API_BASE_URL = "https://agent.nexoira.chat"
+const API_BASE_URL = "https://agent.nexoira.chat:28000"
 
 let chunks = [];
 let mediaRecorder = null;
