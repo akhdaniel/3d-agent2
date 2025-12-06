@@ -93,7 +93,11 @@ def did_start_talking(text):
             "provider": {"type": "microsoft", "voice_id": "id-ID-GadisNeural"}
         },
         "config": {
-            "stitch": True,            
+            "stitch": True,         
+            # "logo": {
+            #     "url": "https://www.dropbox.com/scl/fi/gnzrmdxt62u0i5ugufss9/logo.png?rlkey=kvnc59weebce20k3xq56rug4v&dl=1",
+            #     "position":[10,-10]
+            # }               
             # "driver_expressions": {
             # "expressions": [
             #     {
