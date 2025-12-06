@@ -65,17 +65,6 @@ const error = ref("");
 const videoUrl = ref("");
 const textQuestion = ref("");
 const idleVideoSrc = new URL("../../static/idle.mp4", import.meta.url).href;
-// const fallbackBase =
-//   typeof window !== "undefined" &&
-//   (window.location.hostname === "localhost" ||
-//     window.location.hostname === "127.0.0.1")
-//     ? "http://localhost:28000"
-//     : typeof window !== "undefined"
-//     ? window.location.origin
-//     : "http://localhost:28000";
-// const API_BASE_URL = (
-//   import.meta.env.VITE_API_BASE_URL
-// ).replace(/\/$/, "");
 
 const API_BASE_URL = "https://agent.nexoira.chat/api"
 
@@ -202,32 +191,50 @@ function handleVideoEnded() {
 .chat-container {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.5rem;
   width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.avatar-wrapper {
+  width: 100%;
+}
+
+.avatar-video,
+.avatar-placeholder img {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  object-fit: cover;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
 .controls {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.75rem;
 }
 
 .text-question-input {
   flex: 1;
   min-width: 200px;
-  padding: 0.5rem 0.75rem;
-  border-radius: 6px;
+  padding: 0.6rem 0.75rem;
+  border-radius: 8px;
   border: 1px solid #ccc;
   font-size: 1rem;
 }
 
 .btn {
-  padding: 0.5rem 0.75rem;
+  padding: 0.6rem 0.9rem;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 0.95rem;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .btn:disabled {
@@ -250,6 +257,11 @@ function handleVideoEnded() {
   color: #fff;
 }
 
+.btn:not(:disabled):active {
+  transform: scale(0.98);
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
 .loading {
   color: #555;
 }
@@ -257,8 +269,20 @@ function handleVideoEnded() {
 .error {
   color: #ff4949;
 }
-.avatar-video{
-  width: 60%;
-  padding: 20px;
+
+@media (max-width: 640px) {
+  .chat-container {
+    padding: 0.75rem;
+  }
+
+  .controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .text-question-input,
+  .btn {
+    width: 100%;
+  }
 }
 </style>
