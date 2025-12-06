@@ -65,6 +65,11 @@ const error = ref("");
 const videoUrl = ref("");
 const textQuestion = ref("");
 const idleVideoSrc = new URL("../../static/idle.mp4", import.meta.url).href;
+const API_BASE_URL =
+  window.location.hostname === "localhost" ||
+  window.location.hostname === "127.0.0.1"
+    ? "http://localhost:28000"
+    : "";
 
 let chunks = [];
 let mediaRecorder = null;
@@ -114,7 +119,7 @@ async function stopRecording() {
       form.append("audio", blob, "audio.webm");
 
       try {
-        const res = await fetch("http://localhost:28000/talk", {
+        const res = await fetch(`${API_BASE_URL}/talk`, {
           method: "POST",
           body: form,
         });
@@ -148,7 +153,7 @@ async function sendTypedQuestion() {
   form.append("text", textQuestion.value.trim());
 
   try {
-    const res = await fetch("http://localhost:28000/talk", {
+    const res = await fetch(`${API_BASE_URL}/talk`, {
       method: "POST",
       body: form,
     });
