@@ -113,7 +113,7 @@ async function stopRecording() {
       form.append("audio", blob, "audio.webm");
 
       try {
-        const res = await fetch("http://localhost:8000/talk", {
+        const res = await fetch("http://localhost:28000/talk", {
           method: "POST",
           body: form,
         });
@@ -147,7 +147,7 @@ async function sendTypedQuestion() {
   form.append("text", textQuestion.value.trim());
 
   try {
-    const res = await fetch("http://localhost:8000/talk", {
+    const res = await fetch("http://localhost:28000/talk", {
       method: "POST",
       body: form,
     });

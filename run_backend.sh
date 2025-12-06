@@ -27,4 +27,4 @@ if [ ! -f ".env" ]; then
   exit 1
 fi
 
-exec uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+exec uvicorn main:app --host 0.0.0.0 --port 28000 --reload
